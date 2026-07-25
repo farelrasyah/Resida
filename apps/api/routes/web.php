@@ -3,5 +3,9 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return response()->json([
+        'application' => config('app.name'),
+        'service' => 'RESIDA API',
+        'status' => 'OK',
+    ]);
 });

@@ -1,58 +1,136 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# RESIDA API — Backend Administrasi RT
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+REST API untuk aplikasi administrasi RT perumahan, dibangun dengan Laravel 13 (PHP 8.3).
 
-## About Laravel
+## Fitur Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Penghuni (Resident):** CRUD data penghuni dengan upload foto KTP
+- **Rumah (House):** CRUD data rumah dengan status dihuni/tidak dihuni
+- **Penghunian (Occupancy):** Assign/reassign/riwayat penghuni ke rumah
+- **Iuran (Payment):** Pencatatan pembayaran iuran bulanan/tahunan dengan breakdown periode
+- **Pengeluaran (Expense):** CRUD data pengeluaran RT
+- **Laporan (Report):** Summary tahunan, detail bulanan, dashboard
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tech Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Framework:** Laravel 13
+- **PHP:** 8.3+
+- **Database:** MySQL 8.0+
+- **Auth:** Laravel Sanctum (token-based)
+- **Docs:** Swagger/OpenAPI via l5-swagger
 
-## Learning Laravel
+## Instalasi
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Prasyarat
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP >= 8.3 dengan ekstensi: `mbstring`, `xml`, `ctype`, `json`, `bcmath`, `pdo_mysql`
+- Composer 2.x
+- MySQL 8.0+
+- Node.js (opsional, untuk Vite asset)
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Langkah Instalasi
 
 ```bash
-composer require laravel/boost --dev
+# 1. Clone repository
+git clone <repository-url>
+cd resida/apps/api
 
-php artisan boost:install
+# 2. Install dependencies
+composer install
+
+# 3. Konfigurasi environment
+cp .env.example .env
+# Edit .env sesuai kredensial MySQL lokal Anda
+
+# 4. Generate application key
+php artisan key:generate
+
+# 5. Buat database MySQL
+mysql -u root -e "CREATE DATABASE resida CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+
+# 6. Jalankan migration dan seeder
+php artisan migrate --seed
+
+# 7. Buat symbolic link storage
+php artisan storage:link
+
+# 8. Jalankan server development
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Data Seeder Default
 
-## Contributing
+| Data | Nilai |
+|------|-------|
+| Admin | admin@resida.com / password |
+| Rumah | A-01 s.d. A-20 (20 rumah) |
+| Iuran Satpam | Rp100.000/bulan |
+| Iuran Kebersihan | Rp15.000/bulan (default tahunan) |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## API Documentation
 
-## Code of Conduct
+Setelah server berjalan, akses Swagger UI di: `http://localhost:8000/api/documentation`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Base URL
 
-## Security Vulnerabilities
+```
+http://localhost:8000/api/v1
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Autentikasi
 
-## License
+Semua endpoint (kecuali login) memerlukan header:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```
+Authorization: Bearer {token}
+```
+
+Token didapatkan dari endpoint `POST /api/v1/auth/login`.
+
+### Endpoint Utama
+
+| Method | Endpoint | Deskripsi |
+|--------|----------|-----------|
+| POST | `/auth/login` | Login |
+| POST | `/auth/logout` | Logout |
+| GET/POST | `/residents` | List/Create penghuni |
+| GET/PUT | `/residents/{id}` | Show/Update penghuni |
+| PATCH | `/residents/{id}/deactivate` | Nonaktifkan penghuni |
+| GET/POST | `/houses` | List/Create rumah |
+| GET/PUT | `/houses/{id}` | Show/Update rumah |
+| POST | `/houses/{id}/assign-resident` | Assign penghuni |
+| POST | `/houses/{id}/reassign-resident` | Reassign penghuni |
+| GET | `/houses/{id}/occupancy-history` | Riwayat penghuni |
+| GET | `/dues-types` | List jenis iuran |
+| PUT | `/dues-types/{id}` | Update nominal |
+| GET/POST | `/payments` | List/Create pembayaran |
+| PATCH | `/payments/{id}/cancel` | Batalkan pembayaran |
+| GET/POST | `/expenses` | List/Create pengeluaran |
+| GET | `/reports/summary` | Laporan ringkasan tahunan |
+| GET | `/reports/detail` | Laporan detail bulanan |
+| GET | `/reports/dashboard` | Data dashboard |
+
+## Testing
+
+```bash
+# Jalankan seluruh test
+php artisan test
+
+# Jalankan test spesifik
+php artisan test --filter=PaymentControllerTest
+```
+
+## Arsitektur
+
+```
+Controller → Service → Repository → Model → MySQL
+```
+
+- **Controller:** HTTP orchestration (tipis, tanpa business logic)
+- **Service:** Business logic, validasi bisnis, DB transaction
+- **Repository:** Abstraksi query Eloquent
+- **Model:** Representasi tabel, relasi, cast
+
+## Timezone
+
+Seluruh aplikasi menggunakan timezone **Asia/Jakarta**.
