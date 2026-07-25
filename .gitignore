@@ -1,0 +1,31 @@
+# Node
+node_modules
+.pnpm-store
+
+# Build
+dist
+build
+
+# Env
+.env
+.env.*
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode
+.idea
+
+# Laravel
+apps/api/vendor
+apps/api/storage/*.key
+apps/api/public/hot
+
+# React
+apps/web/node_modules
+apps/web/dist

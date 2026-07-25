@@ -1,0 +1,12 @@
+{
+  "name": "resida",
+  "private": true,
+  "version": "1.0.0",
+  "packageManager": "pnpm@11.1.1",
+  "scripts": {
+    "dev:web": "pnpm --filter web dev",
+    "build:web": "pnpm --filter web build",
+    "lint:web": "pnpm --filter web lint",
+    "format": "prettier --write ."
+  }
+}
