@@ -4,7 +4,7 @@ import { Header } from './components/layout/Header';
 import { MobileDrawer } from './components/layout/MobileDrawer';
 import { HeroSection } from './components/sections/HeroSection';
 import { WhyUsSection } from './components/sections/WhyUsSection';
-import { ArrowsSection } from './components/sections/ArrowsSection';
+
 import { RealEstateRewiredSection } from './components/sections/RealEstateRewiredSection';
 import { ForAgentsSection } from './components/sections/ForAgentsSection';
 import { TestimonialsSection } from './components/sections/TestimonialsSection';
@@ -26,7 +26,6 @@ export const App: React.FC = () => {
       <main>
         <HeroSection />
         <WhyUsSection />
-        <ArrowsSection />
         <RealEstateRewiredSection />
         <ForAgentsSection />
         <TestimonialsSection />
