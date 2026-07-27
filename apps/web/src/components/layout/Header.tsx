@@ -125,7 +125,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
             justifySelf: 'end',
           }}
         >
-          <Button variant="primary" href="https://app.findrealestate.com/authentication/sign-in">
+          <Button variant="primary" href="/login">
             Sign In
           </Button>
         </div>

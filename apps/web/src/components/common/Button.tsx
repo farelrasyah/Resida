@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 interface ButtonProps {
   children: React.ReactNode;
@@ -52,10 +53,19 @@ export const Button: React.FC<ButtonProps> = ({
   );
 
   if (href) {
+    const isExternal = href.startsWith('http') || href.startsWith('//');
+    if (isExternal) {
+      return (
+        <a href={href} className={`find-button-round ${variantClass} ${className}`}>
+          {content}
+        </a>
+      );
+    }
+    
     return (
-      <a href={href} className={`find-button-round ${variantClass} ${className}`}>
+      <Link to={href} className={`find-button-round ${variantClass} ${className}`}>
         {content}
-      </a>
+      </Link>
     );
   }
 
