@@ -7,10 +7,7 @@ import { WhyUsSection } from './components/sections/WhyUsSection';
 
 import { RealEstateRewiredSection } from './components/sections/RealEstateRewiredSection';
 import { ForAgentsSection } from './components/sections/ForAgentsSection';
-import { TestimonialsSection } from './components/sections/TestimonialsSection';
 import { ServicesSection } from './components/sections/ServicesSection';
-import { FeaturesSection } from './components/sections/FeaturesSection';
-import { BlogSection } from './components/sections/BlogSection';
 import { OutroSection } from './components/sections/OutroSection';
 import { Footer } from './components/layout/Footer';
 
@@ -28,10 +25,7 @@ export const App: React.FC = () => {
         <WhyUsSection />
         <RealEstateRewiredSection />
         <ForAgentsSection />
-        {/* <TestimonialsSection />
         <ServicesSection />
-        <FeaturesSection />
-        <BlogSection /> */}
         <OutroSection />
       </main>
 
