@@ -1,0 +1,1829 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "RESIDA API",
+        "description": "REST API untuk sistem informasi manajemen warga perumahan. Mencakup manajemen penghuni, rumah, iuran, pembayaran, pengeluaran, dan laporan keuangan.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api/v1",
+            "description": "Local development server"
+        }
+    ],
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login pengguna",
+                "description": "Mengautentikasi pengguna dengan email dan password, mengembalikan token Sanctum.",
+                "operationId": "985cd5203e2d0a820e113f2f4fdb2847",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "description": "Email pengguna",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "admin@resida.dev"
+                                    },
+                                    "password": {
+                                        "description": "Password pengguna",
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login berhasil.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login berhasil"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "1|abc123def456..."
+                                                },
+                                                "user": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Admin"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "format": "email",
+                                                            "example": "admin@resida.dev"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Email atau password salah.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Email atau password salah"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validasi gagal.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validasi gagal"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout pengguna",
+                "description": "Menghapus token Sanctum yang sedang aktif.",
+                "operationId": "a05022a34eef599e04fb0a5254375b84",
+                "responses": {
+                    "200": {
+                        "description": "Logout berhasil.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logout berhasil"
+                                        },
+                                        "data": {
+                                            "default": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/dues-types": {
+            "get": {
+                "tags": [
+                    "Dues Types"
+                ],
+                "summary": "Daftar jenis iuran",
+                "description": "Seluruh jenis iuran (satpam, kebersihan) beserta nominal.",
+                "operationId": "ae3fd0677cc195e50280072da9c08741",
+                "responses": {
+                    "200": {
+                        "description": "Data jenis iuran berhasil diambil."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/dues-types/{id}": {
+            "put": {
+                "tags": [
+                    "Dues Types"
+                ],
+                "summary": "Update nominal iuran",
+                "description": "Update nominal iuran. Perubahan hanya berlaku untuk pembayaran baru (snapshot).",
+                "operationId": "954cdc3856e3e6fce65f7a0028efa14b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID jenis iuran",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "amount"
+                                ],
+                                "properties": {
+                                    "amount": {
+                                        "description": "Nominal baru (harus > 0)",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 60000
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Nominal iuran berhasil diperbarui."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "404": {
+                        "description": "Jenis iuran tidak ditemukan."
+                    },
+                    "422": {
+                        "description": "Validasi gagal."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/expenses": {
+            "get": {
+                "tags": [
+                    "Expenses"
+                ],
+                "summary": "Daftar pengeluaran (paginasi)",
+                "description": "Daftar pengeluaran kas. Filter: kategori, tahun, bulan.",
+                "operationId": "02dd0399645db746ef68a9bcdab69338",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filter kategori",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "gaji_satpam",
+                                "listrik_utilitas",
+                                "kebersihan",
+                                "perbaikan",
+                                "lainnya"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "Filter tahun",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "month",
+                        "in": "query",
+                        "description": "Filter bulan (1-12)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Halaman",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Data per halaman (max: 100)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data pengeluaran."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Expenses"
+                ],
+                "summary": "Tambah pengeluaran baru",
+                "description": "Mencatat pengeluaran kas baru.",
+                "operationId": "c751fc8afec0e421ff4180beb6d02e87",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "category",
+                                    "description",
+                                    "amount",
+                                    "expense_date"
+                                ],
+                                "properties": {
+                                    "category": {
+                                        "type": "string",
+                                        "example": "listrik_utilitas",
+                                        "enum": [
+                                            "gaji_satpam",
+                                            "listrik_utilitas",
+                                            "kebersihan",
+                                            "perbaikan",
+                                            "lainnya"
+                                        ]
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Bayar listrik Jan 2026",
+                                        "maxLength": 255
+                                    },
+                                    "amount": {
+                                        "description": "Harus > 0",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 500000
+                                    },
+                                    "expense_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-01-10"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Pengeluaran berhasil ditambahkan."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "422": {
+                        "description": "Validasi gagal."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/expenses/{id}": {
+            "get": {
+                "tags": [
+                    "Expenses"
+                ],
+                "summary": "Detail pengeluaran",
+                "description": "Detail pengeluaran berdasarkan ID.",
+                "operationId": "816cba9dcf02e041a8b7a8070d498a6d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID pengeluaran",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data pengeluaran berhasil diambil."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "404": {
+                        "description": "Pengeluaran tidak ditemukan."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Expenses"
+                ],
+                "summary": "Update pengeluaran",
+                "description": "Update data pengeluaran.",
+                "operationId": "eb395073943129ebe9c47ddb07209b54",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID pengeluaran",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "category",
+                                    "description",
+                                    "amount",
+                                    "expense_date"
+                                ],
+                                "properties": {
+                                    "category": {
+                                        "type": "string",
+                                        "example": "listrik_utilitas",
+                                        "enum": [
+                                            "gaji_satpam",
+                                            "listrik_utilitas",
+                                            "kebersihan",
+                                            "perbaikan",
+                                            "lainnya"
+                                        ]
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Bayar listrik Jan 2026",
+                                        "maxLength": 255
+                                    },
+                                    "amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 500000
+                                    },
+                                    "expense_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-01-10"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data pengeluaran berhasil diperbarui."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "404": {
+                        "description": "Pengeluaran tidak ditemukan."
+                    },
+                    "422": {
+                        "description": "Validasi gagal."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/expenses/{id}/deactivate": {
+            "patch": {
+                "tags": [
+                    "Expenses"
+                ],
+                "summary": "Nonaktifkan pengeluaran (soft delete)",
+                "description": "Nonaktifkan pengeluaran (soft delete). Data tetap tersimpan.",
+                "operationId": "d22cc8cb6388b7993f0e93267d8bb46c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID pengeluaran",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pengeluaran berhasil dinonaktifkan."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "404": {
+                        "description": "Pengeluaran tidak ditemukan."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/houses": {
+            "get": {
+                "tags": [
+                    "Houses"
+                ],
+                "summary": "Daftar rumah (paginasi)",
+                "description": "Daftar rumah dengan paginasi. Mendukung pencarian, filter status hunian, dan sorting.",
+                "operationId": "6ec232adfa89735010c2d9475d9f0796",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Cari nomor rumah",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "occupancy_status",
+                        "in": "query",
+                        "description": "Filter status hunian",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "dihuni",
+                                "tidak_dihuni"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sorting. Prefix - untuk desc. Kolom: house_number, created_at, occupancy_status.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Halaman",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Data per halaman (max: 100)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data rumah."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Houses"
+                ],
+                "summary": "Tambah rumah baru",
+                "description": "Tambah rumah. Status awal: tidak_dihuni. Nomor rumah harus unik.",
+                "operationId": "6aa691dbed6d724cbdfff00b8e869897",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "house_number"
+                                ],
+                                "properties": {
+                                    "house_number": {
+                                        "description": "Nomor rumah (unik)",
+                                        "type": "string",
+                                        "example": "A-01",
+                                        "maxLength": 50
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Rumah berhasil ditambahkan."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "422": {
+                        "description": "Validasi gagal (nomor rumah sudah terdaftar)."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/houses/{id}": {
+            "get": {
+                "tags": [
+                    "Houses"
+                ],
+                "summary": "Detail rumah dengan penghuni aktif",
+                "description": "Detail rumah termasuk info penghuni aktif (jika ada).",
+                "operationId": "51edc9f63fe720ffa5b79d28b74a8398",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID rumah",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data rumah berhasil diambil."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "404": {
+                        "description": "Rumah tidak ditemukan."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Houses"
+                ],
+                "summary": "Update data rumah",
+                "description": "Update data rumah. Nomor rumah unik (ignore current).",
+                "operationId": "c64a5ca392c2350ec651d8fb5f383135",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID rumah",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "house_number"
+                                ],
+                                "properties": {
+                                    "house_number": {
+                                        "type": "string",
+                                        "example": "A-01",
+                                        "maxLength": 50
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data rumah berhasil diperbarui."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "404": {
+                        "description": "Rumah tidak ditemukan."
+                    },
+                    "422": {
+                        "description": "Validasi gagal."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/houses/{id}/deactivate": {
+            "patch": {
+                "tags": [
+                    "Houses"
+                ],
+                "summary": "Nonaktifkan rumah (soft delete)",
+                "description": "Nonaktifkan rumah. Hanya jika tidak sedang dihuni.",
+                "operationId": "416e90937db1883649ee1bf656c5e351",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID rumah",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rumah berhasil dinonaktifkan."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "404": {
+                        "description": "Rumah tidak ditemukan."
+                    },
+                    "409": {
+                        "description": "Konflik - rumah masih dihuni."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/houses/{id}/occupancy-history": {
+            "get": {
+                "tags": [
+                    "Houses"
+                ],
+                "summary": "Riwayat penghuni rumah",
+                "description": "Seluruh riwayat hunian rumah, diurutkan dari terbaru.",
+                "operationId": "0342c0ff441bb5b3039d17073e3c18dc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID rumah",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Riwayat penghuni berhasil diambil."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "404": {
+                        "description": "Rumah tidak ditemukan."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/houses/{id}/payment-history": {
+            "get": {
+                "tags": [
+                    "Houses"
+                ],
+                "summary": "Riwayat pembayaran rumah",
+                "description": "Riwayat pembayaran iuran rumah. Filter berdasarkan jenis iuran dan tahun.",
+                "operationId": "2ce3c79c013b28d5857f4beb0c7714f1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID rumah",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "dues_type_id",
+                        "in": "query",
+                        "description": "Filter jenis iuran",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "Filter tahun",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Riwayat pembayaran berhasil diambil."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/houses/{id}/assign-resident": {
+            "post": {
+                "tags": [
+                    "Houses"
+                ],
+                "summary": "Tempatkan penghuni di rumah",
+                "description": "Menempatkan penghuni ke rumah kosong. Validasi: rumah belum dihuni, penghuni belum aktif di rumah lain.",
+                "operationId": "83815e8f228577cd4207aa5ef8eda108",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID rumah",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "resident_id"
+                                ],
+                                "properties": {
+                                    "resident_id": {
+                                        "description": "ID penghuni",
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Penghuni berhasil ditempatkan."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "404": {
+                        "description": "Rumah/penghuni tidak ditemukan."
+                    },
+                    "409": {
+                        "description": "Konflik - rumah sudah dihuni / penghuni sudah aktif."
+                    },
+                    "422": {
+                        "description": "Validasi gagal."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/houses/{id}/reassign-resident": {
+            "post": {
+                "tags": [
+                    "Houses"
+                ],
+                "summary": "Ganti penghuni rumah",
+                "description": "Menutup occupancy lama dan membuat occupancy baru untuk penghuni baru.",
+                "operationId": "07334cde1b9c9670c5f9dbc866f60b03",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID rumah",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "resident_id"
+                                ],
+                                "properties": {
+                                    "resident_id": {
+                                        "description": "ID penghuni baru",
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Penghuni berhasil dipindahkan."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "404": {
+                        "description": "Rumah/penghuni tidak ditemukan."
+                    },
+                    "409": {
+                        "description": "Konflik - penghuni baru sudah aktif di rumah lain."
+                    },
+                    "422": {
+                        "description": "Validasi gagal."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/payments": {
+            "get": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Daftar pembayaran (paginasi)",
+                "description": "Daftar pembayaran iuran. Filter: rumah, penghuni, jenis iuran, status, tahun, bulan.",
+                "operationId": "d42af22098bc46725c8075794e61e560",
+                "parameters": [
+                    {
+                        "name": "house_id",
+                        "in": "query",
+                        "description": "Filter ID rumah",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "resident_id",
+                        "in": "query",
+                        "description": "Filter ID penghuni",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "dues_type_id",
+                        "in": "query",
+                        "description": "Filter jenis iuran",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter status",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "lunas",
+                                "dibatalkan"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "Filter tahun",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "month",
+                        "in": "query",
+                        "description": "Filter bulan (1-12)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Halaman",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Data per halaman (max: 100)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data pembayaran."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Catat pembayaran baru",
+                "description": "Mencatat pembayaran iuran. Amount di-snapshot dari dues_type. Otomatis breakdown ke N periode. Rumah harus memiliki penghuni aktif. Periode lunas tidak bisa dibayar ulang.",
+                "operationId": "480d4be6e6698ff0c959c6b44c4bacbc",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "house_id",
+                                    "dues_type_id",
+                                    "period_start_year",
+                                    "period_start_month",
+                                    "payment_date"
+                                ],
+                                "properties": {
+                                    "house_id": {
+                                        "description": "ID rumah",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "dues_type_id": {
+                                        "description": "ID jenis iuran",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "period_start_year": {
+                                        "description": "Tahun awal periode",
+                                        "type": "integer",
+                                        "example": 2026,
+                                        "maximum": 2100,
+                                        "minimum": 2000
+                                    },
+                                    "period_start_month": {
+                                        "description": "Bulan awal periode",
+                                        "type": "integer",
+                                        "example": 1,
+                                        "maximum": 12,
+                                        "minimum": 1
+                                    },
+                                    "period_count": {
+                                        "description": "Jumlah periode (default: 1)",
+                                        "type": "integer",
+                                        "example": 3,
+                                        "default": 1,
+                                        "maximum": 12,
+                                        "minimum": 1
+                                    },
+                                    "payment_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-01-15"
+                                    },
+                                    "notes": {
+                                        "type": "string",
+                                        "example": "Bayar iuran Jan-Mar 2026",
+                                        "nullable": true,
+                                        "maxLength": 255
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Pembayaran berhasil dicatat."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "409": {
+                        "description": "Konflik - rumah tidak berpenghuni / periode sudah lunas."
+                    },
+                    "422": {
+                        "description": "Validasi gagal."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/payments/{id}": {
+            "get": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Detail pembayaran",
+                "description": "Detail pembayaran termasuk rumah, penghuni, jenis iuran, dan periode.",
+                "operationId": "1331884e82b60a4649bf370b22a043d7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID pembayaran",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data pembayaran berhasil diambil."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "404": {
+                        "description": "Pembayaran tidak ditemukan."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/payments/{id}/cancel": {
+            "patch": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Batalkan pembayaran",
+                "description": "Membatalkan pembayaran (status → dibatalkan). Data periode tetap tersimpan. Pembayaran yang sudah dibatalkan tidak bisa dibatalkan lagi.",
+                "operationId": "484d93aa9470c68a2840caea6ff9b537",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID pembayaran",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pembayaran berhasil dibatalkan."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "404": {
+                        "description": "Pembayaran tidak ditemukan."
+                    },
+                    "409": {
+                        "description": "Konflik - pembayaran sudah dibatalkan."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/reports/summary": {
+            "get": {
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Laporan ringkasan tahunan",
+                "description": "Laporan keuangan tahunan: saldo awal, pendapatan, pengeluaran, saldo kumulatif per bulan.",
+                "operationId": "e573f870b734ffdd8fcbd9416af2c8ad",
+                "parameters": [
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "Tahun (default: tahun berjalan)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Laporan ringkasan tahunan berhasil diambil."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/reports/detail": {
+            "get": {
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Laporan detail bulanan",
+                "description": "Laporan detail bulanan: pembayaran, pengeluaran, status tagihan per rumah (Lunas/Belum Lunas/Tidak Ada Tagihan).",
+                "operationId": "0ce584363f9336335fee3f6449d8252f",
+                "parameters": [
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "Tahun (default: tahun berjalan)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "month",
+                        "in": "query",
+                        "description": "Bulan 1-12 (default: bulan berjalan)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Laporan detail bulanan berhasil diambil."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/reports/dashboard": {
+            "get": {
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Data dashboard",
+                "description": "Ringkasan dashboard: total rumah, terisi/kosong, pendapatan/pengeluaran bulan ini, saldo terkini.",
+                "operationId": "76928d7e4dd388a7ef25fa5fdd011822",
+                "responses": {
+                    "200": {
+                        "description": "Data dashboard berhasil diambil."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/residents": {
+            "get": {
+                "tags": [
+                    "Residents"
+                ],
+                "summary": "Daftar penghuni (paginasi)",
+                "description": "Mengembalikan daftar penghuni dengan paginasi. Mendukung pencarian (search), filter status hunian, dan sorting.",
+                "operationId": "3a32e8e562ae44a95aa7f50edf35e12e",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Cari berdasarkan nama penghuni",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "resident_status",
+                        "in": "query",
+                        "description": "Filter status hunian (kontrak/tetap)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "kontrak",
+                                "tetap"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sorting. Prefix - untuk desc. Kolom: full_name, created_at, resident_status. Contoh: full_name, -created_at",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Halaman",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Data per halaman (max: 100)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data penghuni."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Residents"
+                ],
+                "summary": "Tambah penghuni baru",
+                "description": "Menambahkan data penghuni baru beserta upload foto KTP. Foto KTP wajib diisi.",
+                "operationId": "65baf45a21a18ad3f5c9eac6c83d527a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "full_name",
+                                    "ktp_photo",
+                                    "resident_status",
+                                    "phone_number",
+                                    "marital_status"
+                                ],
+                                "properties": {
+                                    "full_name": {
+                                        "description": "Nama lengkap",
+                                        "type": "string",
+                                        "example": "John Doe",
+                                        "maxLength": 255
+                                    },
+                                    "ktp_photo": {
+                                        "description": "Foto KTP (JPG/JPEG/PNG, max 2MB)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "resident_status": {
+                                        "type": "string",
+                                        "example": "tetap",
+                                        "enum": [
+                                            "kontrak",
+                                            "tetap"
+                                        ]
+                                    },
+                                    "phone_number": {
+                                        "description": "10-15 digit angka",
+                                        "type": "string",
+                                        "example": "081234567890"
+                                    },
+                                    "marital_status": {
+                                        "type": "string",
+                                        "example": "belum_menikah",
+                                        "enum": [
+                                            "sudah_menikah",
+                                            "belum_menikah"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Penghuni berhasil ditambahkan."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "422": {
+                        "description": "Validasi gagal."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/residents/{id}": {
+            "get": {
+                "tags": [
+                    "Residents"
+                ],
+                "summary": "Detail penghuni",
+                "description": "Detail penghuni berdasarkan ID, termasuk info rumah yang ditempati (jika ada).",
+                "operationId": "9d3f9203667a1b59ebd9e5590e1007a4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID penghuni",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data penghuni berhasil diambil."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "404": {
+                        "description": "Penghuni tidak ditemukan."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Residents"
+                ],
+                "summary": "Update data penghuni",
+                "description": "Memperbarui data penghuni. Foto KTP opsional.",
+                "operationId": "fe1e3fe63c48255ef32509ffcc6bbac6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID penghuni",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "full_name",
+                                    "resident_status",
+                                    "phone_number",
+                                    "marital_status"
+                                ],
+                                "properties": {
+                                    "full_name": {
+                                        "type": "string",
+                                        "example": "John Doe",
+                                        "maxLength": 255
+                                    },
+                                    "ktp_photo": {
+                                        "description": "Foto KTP baru (opsional)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "resident_status": {
+                                        "type": "string",
+                                        "example": "tetap",
+                                        "enum": [
+                                            "kontrak",
+                                            "tetap"
+                                        ]
+                                    },
+                                    "phone_number": {
+                                        "type": "string",
+                                        "example": "081234567890"
+                                    },
+                                    "marital_status": {
+                                        "type": "string",
+                                        "example": "belum_menikah",
+                                        "enum": [
+                                            "sudah_menikah",
+                                            "belum_menikah"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data penghuni berhasil diperbarui."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "404": {
+                        "description": "Penghuni tidak ditemukan."
+                    },
+                    "422": {
+                        "description": "Validasi gagal."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/residents/{id}/deactivate": {
+            "patch": {
+                "tags": [
+                    "Residents"
+                ],
+                "summary": "Nonaktifkan penghuni (soft delete)",
+                "description": "Nonaktifkan penghuni. Hanya bisa jika tidak memiliki hunian aktif.",
+                "operationId": "b013b8dfe3b99d3540a4aa4458b97fea",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID penghuni",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Penghuni berhasil dinonaktifkan."
+                    },
+                    "401": {
+                        "description": "Unauthenticated."
+                    },
+                    "404": {
+                        "description": "Penghuni tidak ditemukan."
+                    },
+                    "409": {
+                        "description": "Konflik - penghuni masih memiliki hunian aktif."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/health": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Health check API",
+                "description": "Endpoint publik untuk mengecek status API. Tidak memerlukan autentikasi.",
+                "operationId": "f65288151e9d1958f01d2ac06ceea6b7",
+                "responses": {
+                    "200": {
+                        "description": "API berjalan normal.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "RESIDA API is running."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "version": {
+                                                    "type": "string",
+                                                    "example": "v1"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Masukkan token Sanctum. Format: Bearer {token}",
+                "bearerFormat": "Sanctum",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Login dan logout. Endpoint publik (tidak memerlukan token)."
+        },
+        {
+            "name": "Residents",
+            "description": "CRUD data penghuni. Membutuhkan autentikasi."
+        },
+        {
+            "name": "Houses",
+            "description": "CRUD data rumah, status hunian, penempatan penghuni. Membutuhkan autentikasi."
+        },
+        {
+            "name": "Dues Types",
+            "description": "Master data jenis iuran. Membutuhkan autentikasi."
+        },
+        {
+            "name": "Payments",
+            "description": "Pencatatan pembayaran iuran. Membutuhkan autentikasi."
+        },
+        {
+            "name": "Expenses",
+            "description": "CRUD pengeluaran kas. Membutuhkan autentikasi."
+        },
+        {
+            "name": "Reports",
+            "description": "Laporan keuangan dan ringkasan dashboard. Membutuhkan autentikasi."
+        }
+    ]
+}

@@ -69,7 +69,7 @@ php artisan serve
 
 ## API Documentation
 
-Setelah server berjalan, akses Swagger UI di: `http://localhost:8000/api/documentation`
+Setelah server berjalan, akses Swagger UI di: `http://127.0.0.1:8000/api/documentation`
 
 ### Base URL
 
