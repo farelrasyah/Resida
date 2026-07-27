@@ -3,23 +3,31 @@ import { Button } from '../common/Button';
 
 export const ForAgentsSection: React.FC = () => {
   return (
-    <section style={{ padding: '6rem 0' }} className="for-agents-section">
+    <section style={{ padding: '6rem 0', background: '#ffffff' }} className="for-agents-section">
       <div className="container-main">
         <div className="assymetric-row">
           {/* Left Column — hidden on mobile */}
           <div className="assymetric-col-left desktop-only">
-            {/* Image */}
             <div style={{
-              aspectRatio: '976 / 688',
-              overflow: 'hidden',
-              marginTop: '4rem',
+              display: 'flex',
+              alignItems: 'flex-start',
+              justifyContent: 'flex-start',
+              width: '100%',
+              height: '100%',
+              paddingTop: '60rem',
             }}>
-              <img
-                src="/assets/images/1.52131ac7.jpg"
-                alt="For Agents"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                loading="lazy"
-              />
+              <div style={{
+                width: '80%',
+                aspectRatio: '976 / 688',
+                overflow: 'hidden',
+              }}>
+                <img
+                  src="/assets/images/1.52131ac7.jpg"
+                  alt="For Agents"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  loading="lazy"
+                />
+              </div>
             </div>
           </div>
 
@@ -56,8 +64,7 @@ export const ForAgentsSection: React.FC = () => {
             }} className="for-agents-below">
               At FIND, our agents don't just work for the brand—they own a part of it.{' '}
               <span className="em">
-                We give top performers real equity, so they're invested in more than just your
-                transaction—they're invested in your outcome.
+                We give top performers real equity, so they’re invested in more than just your transaction—they're invested in your outcome. Agents are certified, supported, and equipped to deliver five-star service—because their success is tied to yours. You’re not just here to close deals — you’re building a career, a life, a legacy. We help agents find the company that gives them the support, tools, and leadership to thrive.
               </span>
             </div>
 
@@ -69,7 +76,6 @@ export const ForAgentsSection: React.FC = () => {
               flexDirection: 'column',
             }} className="for-agents-controls">
               <Button variant="primary" href="/join">Join The Movement</Button>
-              <Button variant="secondary" href="/agents">Learn More</Button>
             </div>
           </div>
         </div>

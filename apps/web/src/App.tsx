@@ -28,10 +28,10 @@ export const App: React.FC = () => {
         <WhyUsSection />
         <RealEstateRewiredSection />
         <ForAgentsSection />
-        <TestimonialsSection />
+        {/* <TestimonialsSection />
         <ServicesSection />
         <FeaturesSection />
-        <BlogSection />
+        <BlogSection /> */}
         <OutroSection />
       </main>
 
