@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { ApiError } from '../api/client';
 
 export const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -8,11 +10,29 @@ export const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage(null);
     setIsLoading(true);
-    // Simulate login delay
-    setTimeout(() => setIsLoading(false), 1500);
+    
+    try {
+      await login(email, password);
+      navigate('/dashboard');
+    } catch (err: unknown) {
+      if (err instanceof ApiError) {
+        setErrorMessage(err.message || 'Email atau password tidak sesuai.');
+      } else if (err instanceof Error) {
+        setErrorMessage(err.message);
+      } else {
+        setErrorMessage('Gagal terhubung ke server.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
 
@@ -33,9 +53,16 @@ export const LoginPage: React.FC = () => {
         </div>
 
         <div className="w-full max-w-[420px] mx-auto my-12 flex flex-col items-center md:items-start justify-center flex-1">
-          <h1 className="text-[3.8rem] md:text-[4.6rem] font-bold leading-[1.1] mb-12 tracking-tight text-[#151717] text-center md:text-left w-full" style={{ fontFamily: 'var(--font-primary)' }}>
+          <h1 className="text-[3.8rem] md:text-[4.6rem] font-bold leading-[1.1] mb-8 tracking-tight text-[#151717] text-center md:text-left w-full" style={{ fontFamily: 'var(--font-primary)' }}>
             Welcome back<br />to FIND
           </h1>
+          
+          {errorMessage && (
+            <div className="w-full mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 flex items-center gap-3 text-[1.4rem] font-medium animate-in fade-in slide-in-from-top-2">
+              <AlertCircle size={20} className="shrink-0 text-red-600" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
           
           <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
             <div className="flex flex-col relative">

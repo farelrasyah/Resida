@@ -35,7 +35,7 @@ const ServiceRow: React.FC<{
   service: (typeof SERVICES)[0];
   index: number;
   rowRef: (el: HTMLDivElement | null) => void;
-}> = ({ service, index, rowRef }) => {
+}> = ({ service, index: _index, rowRef }) => {
   const bgRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLSpanElement>(null);
   const arrowRef = useRef<HTMLDivElement>(null);
