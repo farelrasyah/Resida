@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Plus, Search, Eye, Edit2, Trash2, Phone, Home } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
@@ -14,6 +14,8 @@ import { residentService } from '../../api/resident.service';
 import type { Resident, ResidentStatus } from '../../types/resident.types';
 import type { PaginationMeta } from '../../types/api.types';
 import { ApiError } from '../../api/client';
+import { ResidentFormModal } from './components/ResidentFormModal';
+import { ResidentDetailModal } from './components/ResidentDetailModal';
 
 export const ResidentListPage: React.FC = () => {
   const [residents, setResidents] = useState<Resident[]>([]);
@@ -29,9 +31,13 @@ export const ResidentListPage: React.FC = () => {
   const [deactivatingId, setDeactivatingId] = useState<number | null>(null);
   const [isDeactivating, setIsDeactivating] = useState(false);
 
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedResident, setSelectedResident] = useState<Resident | null>(null);
+
   const debouncedSearch = useDebounce(search, 400);
   const { showToast } = useToast();
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchResidents(1);
@@ -81,6 +87,16 @@ export const ResidentListPage: React.FC = () => {
       setIsDeactivating(false);
       setDeactivatingId(null);
     }
+  };
+
+  const openDetail = (resident: Resident) => {
+    setSelectedResident(resident);
+    setShowDetailModal(true);
+  };
+
+  const openEdit = (resident: Resident) => {
+    setSelectedResident(resident);
+    setShowEditModal(true);
   };
 
   const columns: Column<Resident>[] = [
@@ -150,14 +166,14 @@ export const ResidentListPage: React.FC = () => {
       accessor: (item) => (
         <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
           <button
-            onClick={() => navigate(`/residents/${item.id}`)}
+            onClick={() => openDetail(item)}
             className="p-2 rounded-full hover:bg-neutral-100 text-neutral-600 hover:text-[#151717] transition-colors cursor-pointer"
             title="Detail Penghuni"
           >
             <Eye size={18} />
           </button>
           <button
-            onClick={() => navigate(`/residents/${item.id}/edit`)}
+            onClick={() => openEdit(item)}
             className="p-2 rounded-full hover:bg-neutral-100 text-neutral-600 hover:text-[#151717] transition-colors cursor-pointer"
             title="Edit Data"
           >
@@ -186,11 +202,9 @@ export const ResidentListPage: React.FC = () => {
           </p>
         </div>
 
-        <Link to="/residents/new">
-          <Button icon={<Plus size={20} />}>
-            Tambah Penghuni Baru
-          </Button>
-        </Link>
+        <Button icon={<Plus size={20} />} onClick={() => setShowCreateModal(true)}>
+          Tambah Penghuni Baru
+        </Button>
       </div>
 
       {/* Filter and Search Bar */}
@@ -224,11 +238,45 @@ export const ResidentListPage: React.FC = () => {
         keyExtractor={(item) => item.id}
         isLoading={isLoading}
         emptyMessage="Belum ada data penghuni yang terdaftar."
-        onRowClick={(item) => navigate(`/residents/${item.id}`)}
+        onRowClick={(item) => openDetail(item)}
       />
 
       {/* Pagination */}
       <Pagination meta={meta} onPageChange={(page) => fetchResidents(page)} />
+
+      {/* Create Modal */}
+      <ResidentFormModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSuccess={() => fetchResidents(meta.current_page)}
+      />
+
+      {/* Edit Modal */}
+      <ResidentFormModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false);
+          setSelectedResident(null);
+        }}
+        onSuccess={() => fetchResidents(meta.current_page)}
+        resident={selectedResident}
+      />
+
+      {/* Detail Modal */}
+      {selectedResident && (
+        <ResidentDetailModal
+          isOpen={showDetailModal}
+          onClose={() => {
+            setShowDetailModal(false);
+            setSelectedResident(null);
+          }}
+          resident={selectedResident}
+          onEdit={(resident) => {
+            setSelectedResident(resident);
+            setShowEditModal(true);
+          }}
+        />
+      )}
 
       {/* Deactivation Confirm Dialog */}
       <ConfirmDialog

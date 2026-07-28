@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Plus, CreditCard, Eye, XCircle, Home } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Select } from '../../components/ui/Select';
@@ -14,6 +14,7 @@ import type { Payment, PaymentStatus } from '../../types/payment.types';
 import type { DuesType } from '../../types/dues.types';
 import type { PaginationMeta } from '../../types/api.types';
 import { ApiError } from '../../api/client';
+import { PaymentFormModal } from './components/PaymentFormModal';
 
 export const PaymentListPage: React.FC = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -30,6 +31,9 @@ export const PaymentListPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [duesTypeFilter, setDuesTypeFilter] = useState<string>('');
   const [yearFilter, setYearFilter] = useState<string>(new Date().getFullYear().toString());
+
+  // Create modal
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   // Cancel dialog
   const [cancelingId, setCancelingId] = useState<number | null>(null);
@@ -188,11 +192,9 @@ export const PaymentListPage: React.FC = () => {
           </p>
         </div>
 
-        <Link to="/payments/new">
-          <Button icon={<Plus size={20} />}>
-            Catat Pembayaran Baru
-          </Button>
-        </Link>
+        <Button icon={<Plus size={20} />} onClick={() => setShowCreateModal(true)}>
+          Catat Pembayaran Baru
+        </Button>
       </div>
 
       {/* Filter Bar */}
@@ -242,6 +244,13 @@ export const PaymentListPage: React.FC = () => {
 
       {/* Pagination */}
       <Pagination meta={meta} onPageChange={(page) => fetchPayments(page)} />
+
+      {/* Create Modal */}
+      <PaymentFormModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSuccess={() => fetchPayments(meta.current_page)}
+      />
 
       {/* Cancel Dialog */}
       <ConfirmDialog

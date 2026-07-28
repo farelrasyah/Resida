@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Save, Calculator } from 'lucide-react';
-import { Card } from '../../components/ui/Card';
-import { Input } from '../../components/ui/Input';
-import { Select } from '../../components/ui/Select';
-import { Button } from '../../components/ui/Button';
-import { useToast } from '../../hooks/useToast';
-import { paymentService } from '../../api/payment.service';
-import { houseService } from '../../api/house.service';
-import { duesTypeService } from '../../api/duesType.service';
-import type { PaymentFormData } from '../../types/payment.types';
-import type { House } from '../../types/house.types';
-import type { DuesType } from '../../types/dues.types';
-import { ApiError } from '../../api/client';
+import { Save, Calculator } from 'lucide-react';
+import { Modal } from '../../../components/ui/Modal';
+import { Input } from '../../../components/ui/Input';
+import { Select } from '../../../components/ui/Select';
+import { Button } from '../../../components/ui/Button';
+import { useToast } from '../../../hooks/useToast';
+import { paymentService } from '../../../api/payment.service';
+import { houseService } from '../../../api/house.service';
+import { duesTypeService } from '../../../api/duesType.service';
+import type { PaymentFormData } from '../../../types/payment.types';
+import type { House } from '../../../types/house.types';
+import type { DuesType } from '../../../types/dues.types';
+import { ApiError } from '../../../api/client';
 
 const MONTH_OPTIONS = [
   { value: 1, label: 'Januari' },
@@ -29,7 +28,17 @@ const MONTH_OPTIONS = [
   { value: 12, label: 'Desember' },
 ];
 
-export const PaymentFormPage: React.FC = () => {
+interface PaymentFormModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+}
+
+export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
+  isOpen,
+  onClose,
+  onSuccess,
+}) => {
   const currentYear = new Date().getFullYear();
 
   const [houses, setHouses] = useState<House[]>([]);
@@ -58,12 +67,24 @@ export const PaymentFormPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
 
-  const navigate = useNavigate();
   const { showToast } = useToast();
 
   useEffect(() => {
-    fetchInitialData();
-  }, []);
+    if (isOpen) {
+      fetchInitialData();
+      setFormData({
+        house_id: '',
+        dues_type_id: '',
+        start_month: new Date().getMonth() + 1,
+        end_month: new Date().getMonth() + 1,
+        year: currentYear,
+        payment_date: new Date().toISOString().split('T')[0],
+      });
+      setFieldErrors({});
+      setCalculatedTotal(0);
+      setSelectedDues(null);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (formData.dues_type_id) {
@@ -147,7 +168,8 @@ export const PaymentFormPage: React.FC = () => {
       const response = await paymentService.create(payload);
       if (response.success && response.data) {
         showToast('Transaksi pembayaran iuran berhasil dicatat.', 'success');
-        navigate(`/payments/${response.data.id}`);
+        onSuccess();
+        onClose();
       }
     } catch (err: unknown) {
       if (err instanceof ApiError) {
@@ -174,29 +196,19 @@ export const PaymentFormPage: React.FC = () => {
     }).format(val);
   };
 
-  if (isInitializing) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="w-8 h-8 border-4 border-[#151717]/20 border-t-[#151717] rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-8 max-w-3xl">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <button
-          onClick={() => navigate('/payments')}
-          className="inline-flex items-center gap-2 text-neutral-500 hover:text-[#151717] font-semibold text-[1.4rem] cursor-pointer"
-        >
-          <ArrowLeft size={18} />
-          Batal
-        </button>
-        <h1 className="text-[2.6rem] font-bold text-[#151717] tracking-tight">Form Pembayaran Iuran RT</h1>
-      </div>
-
-      <Card>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Tambah Catatan Pembayaran Iuran"
+      subtitle="Lengkapi data pembayaran iuran warga untuk dicatat ke dalam sistem."
+      maxWidth="lg"
+    >
+      {isInitializing ? (
+        <div className="flex items-center justify-center h-48">
+          <div className="w-8 h-8 border-4 border-[#151717]/20 border-t-[#151717] rounded-full animate-spin" />
+        </div>
+      ) : (
         <form onSubmit={handleSubmit} className="space-y-6">
           <Select
             label="Pilih Rumah (Khusus Rumah Berpenghuni)"
@@ -308,13 +320,8 @@ export const PaymentFormPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-6 border-t border-neutral-100 flex items-center justify-end gap-4">
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => navigate('/payments')}
-              disabled={isLoading}
-            >
+          <div className="flex items-center justify-end gap-4 pt-6 border-t border-neutral-100">
+            <Button type="button" variant="secondary" onClick={onClose} disabled={isLoading}>
               Batal
             </Button>
             <Button type="submit" isLoading={isLoading} icon={<Save size={18} />}>
@@ -322,9 +329,7 @@ export const PaymentFormPage: React.FC = () => {
             </Button>
           </div>
         </form>
-      </Card>
-    </div>
+      )}
+    </Modal>
   );
 };
-
-export default PaymentFormPage;

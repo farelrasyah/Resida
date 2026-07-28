@@ -4,11 +4,11 @@ import type { AnnualSummaryReport, DashboardData, MonthlyDetailReport } from '..
 
 export const reportService = {
   getAnnualSummary: async (year: number): Promise<ApiResponse<AnnualSummaryReport>> => {
-    return apiClient.get<AnnualSummaryReport>('/reports/annual-summary', { year });
+    return apiClient.get<AnnualSummaryReport>('/reports/summary', { year });
   },
 
   getMonthlyDetail: async (year: number, month: number): Promise<ApiResponse<MonthlyDetailReport>> => {
-    return apiClient.get<MonthlyDetailReport>('/reports/monthly-detail', { year, month });
+    return apiClient.get<MonthlyDetailReport>('/reports/detail', { year, month });
   },
 
   getDashboard: async (): Promise<ApiResponse<DashboardData>> => {

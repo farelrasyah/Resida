@@ -24,23 +24,23 @@ export const houseService = {
     return apiClient.post<{ message: string }>(`/houses/${id}/deactivate`);
   },
 
-  assignResident: async (houseId: number, residentId: number): Promise<ApiResponse<HouseDetail>> => {
-    return apiClient.post<HouseDetail>(`/houses/${houseId}/occupancies`, {
+  assignResident: async (houseId: number, residentId: number): Promise<ApiResponse<OccupancyRecord>> => {
+    return apiClient.post<OccupancyRecord>(`/houses/${houseId}/assign-resident`, {
       resident_id: residentId,
     });
   },
 
-  reassignResident: async (houseId: number, residentId: number): Promise<ApiResponse<HouseDetail>> => {
-    return apiClient.post<HouseDetail>(`/houses/${houseId}/occupancies/reassign`, {
+  reassignResident: async (houseId: number, residentId: number): Promise<ApiResponse<OccupancyRecord>> => {
+    return apiClient.post<OccupancyRecord>(`/houses/${houseId}/reassign-resident`, {
       resident_id: residentId,
     });
   },
 
   getOccupancyHistory: async (houseId: number): Promise<ApiResponse<OccupancyRecord[]>> => {
-    return apiClient.get<OccupancyRecord[]>(`/houses/${houseId}/occupancies/history`);
+    return apiClient.get<OccupancyRecord[]>(`/houses/${houseId}/occupancy-history`);
   },
 
   getPaymentHistory: async (houseId: number): Promise<ApiResponse<Payment[]>> => {
-    return apiClient.get<Payment[]>(`/houses/${houseId}/payments`);
+    return apiClient.get<Payment[]>(`/houses/${houseId}/payment-history`);
   },
 };

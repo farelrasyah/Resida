@@ -4,12 +4,19 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\ExpenseCategory;
 use App\Enums\PaymentStatus;
 use App\Models\DuesType;
+use App\Models\Payment;
+use App\Models\Expense;
+use App\Models\Resident;
+use App\Models\House;
+use App\Models\PaymentPeriod;
 use App\Repositories\Contracts\ExpenseRepositoryInterface;
 use App\Repositories\Contracts\HouseRepositoryInterface;
 use App\Repositories\Contracts\PaymentPeriodRepositoryInterface;
 use App\Repositories\Contracts\PaymentRepositoryInterface;
+use Illuminate\Support\Facades\DB;
 
 class ReportService
 {
@@ -127,38 +134,205 @@ class ReportService
         ];
     }
 
-    /**
-     * Get dashboard summary (lightweight aggregate for landing page).
-     *
-     * @return array{total_houses: int, occupied_houses: int, vacant_houses: int, current_month_income: float, current_month_expense: float, current_balance: float}
-     */
     public function getDashboard(): array
     {
-        $houseCounts = $this->houseRepository->countByStatus();
-
         $currentYear = (int) now()->year;
         $currentMonth = (int) now()->month;
+        $lastMonthDate = now()->subMonth();
+        $lastMonthYear = (int) $lastMonthDate->year;
+        $lastMonth = (int) $lastMonthDate->month;
 
-        $monthlyIncome = $this->paymentRepository->getMonthlyIncomeByPeriods($currentYear);
-        $monthlyExpense = $this->expenseRepository->getMonthlyExpenses($currentYear);
+        // --- KPIs ---
+        $houseCounts = $this->houseRepository->countByStatus();
+        
+        $totalResidents = Resident::count();
+        $totalResidentsLastMonth = Resident::where('created_at', '<', now()->startOfMonth())->count();
 
-        // Calculate current balance (all-time income - all-time expense up to current month)
+        $monthlyIncomeCurrent = $this->paymentRepository->getMonthlyIncomeByPeriods($currentYear);
+        $monthlyIncomeLastMonth = $lastMonthYear === $currentYear 
+            ? ($monthlyIncomeCurrent[$lastMonth] ?? 0.0) 
+            : ($this->paymentRepository->getMonthlyIncomeByPeriods($lastMonthYear)[$lastMonth] ?? 0.0);
+            
+        $monthlyExpenseCurrent = $this->expenseRepository->getMonthlyExpenses($currentYear);
+        $monthlyExpenseLastMonth = $lastMonthYear === $currentYear 
+            ? ($monthlyExpenseCurrent[$lastMonth] ?? 0.0) 
+            : ($this->expenseRepository->getMonthlyExpenses($lastMonthYear)[$lastMonth] ?? 0.0);
+
+        // Calculate current balance
         $incomeBeforeYear = $this->paymentRepository->getIncomeBeforeYear($currentYear);
         $expenseBeforeYear = $this->expenseRepository->getExpenseBeforeYear($currentYear);
         $startingBalance = $incomeBeforeYear - $expenseBeforeYear;
-
         $currentBalance = $startingBalance;
         for ($m = 1; $m <= $currentMonth; $m++) {
-            $currentBalance += ($monthlyIncome[$m] ?? 0.0) - ($monthlyExpense[$m] ?? 0.0);
+            $currentBalance += ($monthlyIncomeCurrent[$m] ?? 0.0) - ($monthlyExpenseCurrent[$m] ?? 0.0);
         }
 
-        return [
-            'total_houses' => $houseCounts['total'],
-            'occupied_houses' => $houseCounts['occupied'],
-            'vacant_houses' => $houseCounts['vacant'],
-            'current_month_income' => $monthlyIncome[$currentMonth] ?? 0.0,
-            'current_month_expense' => $monthlyExpense[$currentMonth] ?? 0.0,
-            'current_balance' => $currentBalance,
+        // Paid vs Unpaid Dues count for current month
+        $totalOccupiedHouses = $houseCounts['occupied'];
+        $duesTypesCount = DuesType::count();
+        $expectedPeriods = $totalOccupiedHouses * $duesTypesCount;
+        $paidPeriodsCount = PaymentPeriod::where('period_year', $currentYear)
+            ->where('period_month', $currentMonth)
+            ->whereHas('payment', fn($q) => $q->where('status', PaymentStatus::Lunas->value))
+            ->count();
+        $unpaidPeriodsCount = max(0, $expectedPeriods - $paidPeriodsCount);
+
+        // --- Charts Data ---
+        // Cash Flow Chart (12 months of current year)
+        $cashFlowChart = [];
+        $runningBalance = $startingBalance;
+        for ($m = 1; $m <= 12; $m++) {
+            $inc = $monthlyIncomeCurrent[$m] ?? 0.0;
+            $exp = $monthlyExpenseCurrent[$m] ?? 0.0;
+            $runningBalance += $inc - $exp;
+            $cashFlowChart[] = [
+                'month' => date('M', mktime(0, 0, 0, $m, 1)),
+                'income' => $inc,
+                'expense' => $exp,
+                'balance' => $m <= $currentMonth ? $runningBalance : null,
+            ];
+        }
+
+        // Expense Categories
+        $expenseCategories = Expense::select('category', DB::raw('SUM(amount) as total'))
+            ->whereYear('expense_date', $currentYear)
+            ->whereMonth('expense_date', $currentMonth)
+            ->groupBy('category')
+            ->get()
+            ->map(fn($e) => [
+                'name' => $this->getCategoryLabel($e->category),
+                'value' => (float) $e->total,
+                'color' => $this->getCategoryColor($this->getCategoryLabel($e->category))
+            ]);
+
+        // House Composition
+        $houseComposition = [
+            ['name' => 'Terisi', 'value' => $houseCounts['occupied'], 'color' => '#3b82f6'],
+            ['name' => 'Kosong', 'value' => $houseCounts['vacant'], 'color' => '#ef4444'],
         ];
+
+        // --- Widgets Data ---
+        $latestPayments = Payment::with(['house'])
+            ->where('status', PaymentStatus::Lunas->value)
+            ->orderByDesc('payment_date')
+            ->orderByDesc('id')
+            ->limit(5)
+            ->get()
+            ->map(fn($p) => [
+                'id' => $p->id,
+                'date' => $p->payment_date->format('Y-m-d'),
+                'house' => $p->house->house_number ?? '-',
+                'amount' => (float) $p->amount,
+                'method' => 'Tunai',
+                'admin' => '-',
+            ]);
+
+        $latestExpenses = Expense::orderByDesc('expense_date')
+            ->orderByDesc('id')
+            ->limit(5)
+            ->get()
+            ->map(fn($e) => [
+                'id' => $e->id,
+                'date' => $e->expense_date->format('Y-m-d'),
+                'title' => $e->description,
+                'category' => $this->getCategoryLabel($e->category),
+                'amount' => (float) $e->amount,
+            ]);
+
+        $topDefaulters = House::where('occupancy_status', 'occupied')
+            ->get()
+            ->map(function ($house) use ($currentYear, $currentMonth, $duesTypesCount) {
+                // Approximate unpaid by checking how many periods they paid this year vs expected
+                $paidThisYear = PaymentPeriod::where('house_id', $house->id)
+                    ->where('period_year', $currentYear)
+                    ->where('period_month', '<=', $currentMonth)
+                    ->whereHas('payment', fn($q) => $q->where('status', PaymentStatus::Lunas->value))
+                    ->count();
+                $expected = $currentMonth * $duesTypesCount;
+                $unpaid = max(0, $expected - $paidThisYear);
+                return [
+                    'house_number' => $house->house_number,
+                    'unpaid_count' => $unpaid,
+                    'resident' => $house->activeOccupancy->resident->full_name ?? '-',
+                ];
+            })
+            ->filter(fn($h) => $h['unpaid_count'] > 0)
+            ->sortByDesc('unpaid_count')
+            ->values()
+            ->take(5);
+
+        // Mix recent activities
+        $activities = collect([]);
+        foreach ($latestPayments as $p) {
+            $activities->push([
+                'type' => 'payment',
+                'title' => "Pembayaran Iuran: {$p['house']}",
+                'subtitle' => "Rp " . number_format($p['amount'], 0, ',', '.'),
+                'date' => $p['date']
+            ]);
+        }
+        foreach ($latestExpenses as $e) {
+            $activities->push([
+                'type' => 'expense',
+                'title' => "Pengeluaran: {$e['title']}",
+                'subtitle' => "Rp " . number_format($e['amount'], 0, ',', '.'),
+                'date' => $e['date']
+            ]);
+        }
+        
+        return [
+            'kpis' => [
+                'total_houses' => $houseCounts['total'],
+                'occupied_houses' => $houseCounts['occupied'],
+                'vacant_houses' => $houseCounts['vacant'],
+                'total_residents' => $totalResidents,
+                'total_residents_last_month' => $totalResidentsLastMonth,
+                'current_month_income' => $monthlyIncomeCurrent[$currentMonth] ?? 0.0,
+                'last_month_income' => $monthlyIncomeLastMonth,
+                'current_month_expense' => $monthlyExpenseCurrent[$currentMonth] ?? 0.0,
+                'last_month_expense' => $monthlyExpenseLastMonth,
+                'current_balance' => $currentBalance,
+                'unpaid_periods' => $unpaidPeriodsCount,
+                'paid_periods' => $paidPeriodsCount,
+                'expected_periods' => $expectedPeriods,
+            ],
+            'charts' => [
+                'cash_flow' => $cashFlowChart,
+                'expense_categories' => $expenseCategories,
+                'house_composition' => $houseComposition,
+            ],
+            'widgets' => [
+                'latest_payments' => $latestPayments,
+                'latest_expenses' => $latestExpenses,
+                'top_defaulters' => $topDefaulters,
+                'recent_activities' => $activities->sortByDesc('date')->values()->take(10),
+            ]
+        ];
+    }
+
+    private function getCategoryLabel(ExpenseCategory $category): string
+    {
+        return match ($category) {
+            ExpenseCategory::GajiSatpam => 'Keamanan',
+            ExpenseCategory::Kebersihan => 'Kebersihan',
+            ExpenseCategory::ListrikUtilitas => 'Listrik & Air',
+            ExpenseCategory::Perbaikan => 'Perbaikan',
+            ExpenseCategory::Lainnya => 'Operasional',
+        };
+    }
+
+    private function getCategoryColor(string $categoryName): string
+    {
+        $colors = [
+            'Keamanan' => '#3b82f6',
+            'Kebersihan' => '#10b981',
+            'Sosial' => '#f59e0b',
+            'Perbaikan' => '#ef4444',
+            'Operasional' => '#8b5cf6',
+            'Listrik & Air' => '#06b6d4',
+            'Event/Acara' => '#ec4899',
+        ];
+        
+        return $colors[$categoryName] ?? '#94a3b8';
     }
 }

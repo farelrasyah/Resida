@@ -10,8 +10,6 @@ import { DashboardPage } from '../pages/DashboardPage';
 
 // Resident Pages
 import { ResidentListPage } from '../pages/residents/ResidentListPage';
-import { ResidentDetailPage } from '../pages/residents/ResidentDetailPage';
-import { ResidentFormPage } from '../pages/residents/ResidentFormPage';
 
 // House Pages
 import { HouseListPage } from '../pages/houses/HouseListPage';
@@ -22,7 +20,6 @@ import { DuesTypeSettingPage } from '../pages/dues/DuesTypeSettingPage';
 
 // Payment Pages
 import { PaymentListPage } from '../pages/payments/PaymentListPage';
-import { PaymentFormPage } from '../pages/payments/PaymentFormPage';
 import { PaymentDetailPage } from '../pages/payments/PaymentDetailPage';
 
 // Expense Pages
@@ -52,9 +49,6 @@ export const AppRoutes: React.FC = () => {
 
           {/* Master Data: Residents */}
           <Route path="/residents" element={<ResidentListPage />} />
-          <Route path="/residents/new" element={<ResidentFormPage />} />
-          <Route path="/residents/:id" element={<ResidentDetailPage />} />
-          <Route path="/residents/:id/edit" element={<ResidentFormPage />} />
 
           {/* Master Data: Houses */}
           <Route path="/houses" element={<HouseListPage />} />
@@ -65,7 +59,6 @@ export const AppRoutes: React.FC = () => {
 
           {/* Transactions: Payments */}
           <Route path="/payments" element={<PaymentListPage />} />
-          <Route path="/payments/new" element={<PaymentFormPage />} />
           <Route path="/payments/:id" element={<PaymentDetailPage />} />
 
           {/* Transactions: Expenses */}
