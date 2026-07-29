@@ -138,4 +138,15 @@ class AuthController extends Controller
 
         return ApiResponse::success(null, 'Logout berhasil');
     }
+
+    public function me(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        return ApiResponse::success([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+        ], 'Data pengguna berhasil diambil');
+    }
 }

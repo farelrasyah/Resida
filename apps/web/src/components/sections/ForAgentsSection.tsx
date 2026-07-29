@@ -22,7 +22,7 @@ export const ForAgentsSection: React.FC = () => {
                 overflow: 'hidden',
               }}>
                 <img
-                  src="/assets/images/1.52131ac7.jpg"
+                  src="/assets/images/resida_managers.png"
                   alt="For Agents"
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   loading="lazy"
@@ -40,7 +40,7 @@ export const ForAgentsSection: React.FC = () => {
               lineHeight: 1.15,
               letterSpacing: '-0.01em',
             }} className="for-agents-above">
-              Don't Rent Your Career. <span className="em">Own It.</span>
+              Pendataan Cerdas. <span className="em">Hidup Tenang.</span>
             </div>
 
             {/* Image (shown on both mobile and desktop within right col) */}
@@ -49,8 +49,8 @@ export const ForAgentsSection: React.FC = () => {
               overflow: 'hidden',
             }}>
               <img
-                src="/assets/images/2.41633fa6.jpg"
-                alt="Own Your Real Estate Career"
+                src="/assets/images/resida_office_desk.png"
+                alt="Administrasi Digital"
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 loading="lazy"
               />
@@ -62,9 +62,9 @@ export const ForAgentsSection: React.FC = () => {
               fontSize: '2.2rem',
               lineHeight: 1.4,
             }} className="for-agents-below">
-              At FIND, our agents don't just work for the brand—they own a part of it.{' '}
+              Di RESIDA, administrasi RT tidak lagi menjadi beban bulanan.{' '}
               <span className="em">
-                We give top performers real equity, so they’re invested in more than just your transaction—they're invested in your outcome. Agents are certified, supported, and equipped to deliver five-star service—because their success is tied to yours. You’re not just here to close deals — you’re building a career, a life, a legacy. We help agents find the company that gives them the support, tools, and leadership to thrive.
+                Kami menyediakan platform digital terpadu untuk pengurus dan warga, sehingga pencatatan kas, iuran, dan histori kependudukan menjadi jauh lebih transparan dan efisien. Warga dapat mengakses laporan secara langsung, sementara pengurus dapat fokus pada hal-hal yang benar-benar penting—membangun kerukunan lingkungan.
               </span>
             </div>
 
@@ -75,7 +75,7 @@ export const ForAgentsSection: React.FC = () => {
               gap: '1rem',
               flexDirection: 'column',
             }} className="for-agents-controls">
-              <Button variant="primary" href="/join">Join The Movement</Button>
+              <Button variant="primary" href="/dashboard">Mulai Kelola RT</Button>
             </div>
           </div>
         </div>

@@ -165,7 +165,7 @@ export const HeroSection: React.FC = () => {
                     color: '#151717',
                     margin: 0,
                   }}>
-                    Find What Moves You
+                    Administrasi RT Digital
                   </h1>
                 </div>
 
@@ -178,13 +178,13 @@ export const HeroSection: React.FC = () => {
                   color: '#151717',
                   textWrap: 'balance',
                 }}>
-                  <span className="em">Expert </span>
-                  agents. Real guidance.{' '}
-                  <span className="em">A clear path to find what's next.</span>
+                  <span className="em">Akses cepat </span>
+                  data penghuni. Pantau iuran rutin.{' '}
+                  <span className="em">Solusi transparan untuk lingkungan modern.</span>
                 </p>
 
                 <div className="hero-actions" style={{ margin: '3rem 0 0', display: 'flex', justifyContent: 'center' }}>
-                  <Button variant="primary" href="/search">Find Properties</Button>
+                  <Button variant="primary" href="/dashboard">Masuk Dashboard</Button>
                 </div>
               </div>
             </div>
@@ -207,7 +207,7 @@ export const HeroSection: React.FC = () => {
           >
             <img
               src="/assets/images/house.8ed9b3db.png"
-              alt="FIND Real Estate"
+              alt="RESIDA"
               style={{ width: '100%', height: '100%', objectFit: 'contain' }}
             />
           </div>

@@ -128,7 +128,7 @@ export const WhyUsSection: React.FC = () => {
             color: '#151717',
           }}
         >
-          This isn't just about <span className="em">real estate.</span>
+          Ini bukan sekadar <span className="em">administrasi RT biasa.</span>
         </h2>
 
         <div
@@ -196,9 +196,9 @@ export const WhyUsSection: React.FC = () => {
             color: '#151717',
           }}
         >
-          It's about identity. Progress. Getting unstuck.{' '}
-          You're not just looking for a place.{' '}
-          <span className="em">You're looking for alignment.</span>
+          Ini tentang transparansi. Keamanan. Dan kenyamanan bersama.{' '}
+          Anda tidak sekadar mendata warga.{' '}
+          <span className="em">Anda sedang membangun lingkungan yang harmonis.</span>
         </p>
       </div>
 

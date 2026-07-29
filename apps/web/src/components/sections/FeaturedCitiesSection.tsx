@@ -15,7 +15,7 @@ export const FeaturedCitiesSection: React.FC = () => {
       tagline: 'Manhattan, Brooklyn & Queens',
       activeListings: '1,420 Listings',
       avgPrice: '$1.45M Avg',
-      image: '/assets/images/1.f6e8f2e8.jpg',
+      image: '/assets/images/resida_complex.png',
       badge: 'High Demand',
     },
     {
@@ -23,7 +23,7 @@ export const FeaturedCitiesSection: React.FC = () => {
       tagline: 'Center City, Main Line & Rittenhouse',
       activeListings: '860 Listings',
       avgPrice: '$520K Avg',
-      image: '/assets/images/2.41633fa6.jpg',
+      image: '/assets/images/resida_dashboard_laptop.png',
       badge: 'Best Value',
     },
     {
@@ -31,7 +31,7 @@ export const FeaturedCitiesSection: React.FC = () => {
       tagline: 'Brickell, Miami Beach & Fort Lauderdale',
       activeListings: '1,150 Listings',
       avgPrice: '$1.85M Avg',
-      image: '/assets/images/1.52131ac7.jpg',
+      image: '/assets/images/resida_community_meeting.png',
       badge: 'Trending',
     },
     {
@@ -39,7 +39,7 @@ export const FeaturedCitiesSection: React.FC = () => {
       tagline: 'Beverly Hills, Santa Monica & West Hollywood',
       activeListings: '940 Listings',
       avgPrice: '$2.30M Avg',
-      image: '/assets/images/1.e7a1ff18.jpg',
+      image: '/assets/images/resida_mobile_payment.png',
       badge: 'Luxury Core',
     },
   ];

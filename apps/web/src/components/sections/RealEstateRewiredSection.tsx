@@ -4,16 +4,16 @@ import { Button } from '../common/Button';
 
 const STEPS = [
   {
-    title: 'Talk to a Real Human.',
-    desc: 'We match you with an expert who actually listens.',
+    title: 'Data Warga Terpusat.',
+    desc: 'Kelola profil, riwayat, dan dokumen warga dalam satu sistem terintegrasi.',
   },
   {
-    title: 'Get Clarity.',
-    desc: "We define what you really need, not just what's available.",
+    title: 'Transparansi Kas.',
+    desc: 'Catat iuran bulanan dan lacak pengeluaran RT/RW dengan mudah dan akurat.',
   },
   {
-    title: 'Move Forward.',
-    desc: 'We find what fits — and make it happen.',
+    title: 'Laporan Otomatis.',
+    desc: 'Pantau status keuangan dan tunggakan secara real-time kapan saja.',
   },
 ];
 
@@ -96,8 +96,8 @@ export const RealEstateRewiredSection: React.FC = () => {
                 color: '#151717',
               }}
             >
-              Real Estate,<br />
-              <span className="em">Rewired.</span>
+              Administrasi RT,<br />
+              <span className="em">Digital.</span>
             </h2>
 
             <div
@@ -110,7 +110,7 @@ export const RealEstateRewiredSection: React.FC = () => {
                 href="/join"
                 className="rewired-cta-button"
               >
-                Join The Movement
+                Mulai Sekarang
               </Button>
             </div>
           </div>
@@ -127,7 +127,7 @@ export const RealEstateRewiredSection: React.FC = () => {
                 marginBottom: '3rem',
               }}
             >
-              Steps:
+              Fitur:
             </div>
 
             <div className="rewired-steps-list">

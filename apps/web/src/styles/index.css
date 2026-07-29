@@ -3,7 +3,7 @@
 @import "./fonts.css";
 
 /* ================================================================
-   FIND Real Estate — Production Design Tokens
+   RESIDA Real Estate — Production Design Tokens
    Extracted from findrealestate.com production CSS (339KB, 12 files)
    ================================================================ */
 
@@ -47,7 +47,9 @@
   * {
     box-sizing: border-box;
   }
-  *::before, *::after {
+
+  *::before,
+  *::after {
     box-sizing: border-box;
   }
 
@@ -73,7 +75,13 @@
     max-width: 100%;
   }
 
-  h1, h2, h3, h4, h5, h6, p {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p {
     margin: 0;
   }
 }
@@ -188,10 +196,9 @@
 
 /* ================================================================
    BUTTON: Round Button with Roll Animation
-   Extracted exact values from production CSS
    ================================================================ */
-.find-button-round,
-.find-button-link {
+.resida-button-round,
+.resida-button-link {
   position: relative;
   display: inline-block;
   height: auto;
@@ -213,18 +220,19 @@
 }
 
 @media (pointer: fine) {
-  .find-button-round,
-  .find-button-link {
+
+  .resida-button-round,
+  .resida-button-link {
     cursor: pointer;
   }
 }
 
-.find-button-round:disabled {
+.resida-button-round:disabled {
   opacity: 0.5;
   pointer-events: none;
 }
 
-.find-button-round {
+.resida-button-round {
   transition: transform 0.3s;
   border-radius: 100px;
   padding: 1.4rem 2.4rem;
@@ -234,7 +242,7 @@
 }
 
 @media (min-width: 768px) {
-  .find-button-round {
+.resida-button-round {
     font-size: 1.8rem;
     line-height: 1.4;
     padding: 1.54rem 3rem;
@@ -242,25 +250,25 @@
 }
 
 @media (pointer: fine) {
-  .find-button-round:hover {
+  .resida-button-round:hover {
     transform: scale(1.03);
-    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
     transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s ease;
   }
 }
 
 /* Button text roll animation */
-.find-button-text {
+.resida-button-text {
   overflow: hidden;
 }
 
-.find-button-text span {
+.resida-button-text span {
   position: relative;
   display: block;
   transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.find-button-text span::after {
+.resida-button-text span::after {
   content: attr(data-text);
   display: block;
   position: absolute;
@@ -270,13 +278,13 @@
 }
 
 @media (pointer: fine) {
-  .find-button-round:hover .find-button-text span {
+  .resida-button-round:hover .resida-button-text span {
     transform: translateY(-105%);
   }
 }
 
 /* Button content layout */
-.find-button-content {
+.resida-button-content {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -285,7 +293,7 @@
 }
 
 /* Icon after button */
-.find-button-icon-after {
+.resida-button-icon-after {
   --size: 2.4rem;
   display: flex;
   align-items: center;
@@ -297,28 +305,28 @@
 }
 
 /* Button Color Variants */
-.find-button-primary {
+.resida-button-primary {
   background-color: #151717;
   color: #fff;
 }
 
-.find-button-primary.find-button-inversed,
-.find-button-secondary {
+.resida-button-primary.resida-button-inversed,
+.resida-button-secondary {
   background-color: #fff;
   color: #151717;
 }
 
-.find-button-secondary {
+.resida-button-secondary {
   border: 1px solid rgba(21, 23, 23, 0.3);
 }
 
-.find-button-secondary.find-button-inversed {
+.resida-button-secondary.resida-button-inversed {
   background-color: transparent;
   color: #fff;
   border-color: hsla(0, 0%, 100%, 0.5);
 }
 
-.find-button-emerald {
+.resida-button-emerald {
   background-color: #151717;
   color: #fff;
 }
@@ -326,7 +334,7 @@
 /* ================================================================
    ICON BUTTON (circular arrow buttons)
    ================================================================ */
-.find-icon-button {
+.resida-icon-button {
   position: relative;
   display: inline-block;
   height: auto;
@@ -349,7 +357,7 @@
 }
 
 @media (min-width: 768px) {
-  .find-icon-button {
+  .resida-icon-button {
     min-width: var(--size, 6.7rem);
     min-height: var(--size, 6.7rem);
     width: var(--size, 6.7rem);
@@ -357,13 +365,13 @@
   }
 }
 
-.find-icon-button svg {
+.resida-icon-button svg {
   width: 2rem;
   height: 2rem;
 }
 
 @media (min-width: 768px) {
-  .find-icon-button svg {
+  .resida-icon-button svg {
     width: 2.5rem;
     height: 2.5rem;
   }
@@ -372,7 +380,7 @@
 /* ================================================================
    TEXT INPUT (for newsletter in footer)
    ================================================================ */
-.find-text-input {
+.resida-text-input {
   display: block;
   width: 100%;
   background: none;
@@ -388,17 +396,17 @@
 }
 
 @media (min-width: 768px) {
-  .find-text-input {
+  .resida-text-input {
     font-size: 2rem;
     padding: 2rem 5rem 2rem 0;
   }
 }
 
-.find-text-input::placeholder {
+.resida-text-input::placeholder {
   color: hsla(0, 0%, 100%, 0.4);
 }
 
-.find-text-input:focus {
+.resida-text-input:focus {
   border-color: #fff !important;
 }
 
@@ -501,6 +509,7 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;

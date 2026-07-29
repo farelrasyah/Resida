@@ -28,6 +28,7 @@ export interface Payment {
   amount: number;
   total_amount: number;
   payment_date: string;
+  payment_method?: string;
   status: PaymentStatus;
   notes: string | null;
   periods?: PaymentPeriodItem[];

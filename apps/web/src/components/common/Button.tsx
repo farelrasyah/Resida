@@ -22,16 +22,16 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const variantClass =
     variant === 'emerald'
-      ? 'find-button-emerald'
+      ? 'resida-button-emerald'
       : variant === 'secondary'
-      ? 'find-button-secondary'
-      : 'find-button-primary';
+      ? 'resida-button-secondary'
+      : 'resida-button-primary';
 
   const textString = typeof children === 'string' ? children : String(children);
 
   const content = (
-    <span className="find-button-content">
-      <span className="find-button-text">
+    <span className="resida-button-content">
+      <span className="resida-button-text">
         <span data-text={textString}>{children}</span>
       </span>
 
@@ -56,14 +56,14 @@ export const Button: React.FC<ButtonProps> = ({
     const isExternal = href.startsWith('http') || href.startsWith('//');
     if (isExternal) {
       return (
-        <a href={href} className={`find-button-round ${variantClass} ${className}`}>
+        <a href={href} className={`resida-button-round ${variantClass} ${className}`}>
           {content}
         </a>
       );
     }
     
     return (
-      <Link to={href} className={`find-button-round ${variantClass} ${className}`}>
+      <Link to={href} className={`resida-button-round ${variantClass} ${className}`}>
         {content}
       </Link>
     );
@@ -73,7 +73,7 @@ export const Button: React.FC<ButtonProps> = ({
     <button
       type={type}
       onClick={onClick}
-      className={`find-button-round ${variantClass} ${className}`}
+      className={`resida-button-round ${variantClass} ${className}`}
     >
       {content}
     </button>

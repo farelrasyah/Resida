@@ -8,12 +8,12 @@ interface MobileDrawerProps {
 }
 
 const NAV_ITEMS = [
-  { label: 'Search', href: '/search' },
-  { label: 'Agents', href: '/agents' },
-  { label: 'Join', href: '/join' },
-  { label: 'Paperwork', href: '/paperwork' },
-  { label: 'Resources', href: '/resources' },
-  { label: 'About', href: '/about' },
+  { label: 'Beranda', href: '/' },
+  { label: 'Dashboard', href: '/dashboard' },
+  { label: 'Data Warga', href: '/residents' },
+  { label: 'Pembayaran', href: '/payments' },
+  { label: 'Laporan', href: '/reports/summary' },
+  { label: 'Pengeluaran', href: '/expenses' },
 ] as const;
 
 export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) => {
@@ -37,7 +37,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
     >
       {/* Top: Logo + Close */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <a href="/" aria-label="FIND Real Estate" style={{ display: 'flex', alignItems: 'center' }}>
+        <a href="/" aria-label="RESIDA" style={{ display: 'flex', alignItems: 'center' }}>
           <svg
             style={{ width: '9.1rem', height: '2.6rem' }}
             fill="none"
@@ -94,10 +94,10 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
       <div style={{ paddingTop: '2.4rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.6rem', alignItems: 'center' }}>
           <div style={{ fontSize: '1.4rem', color: 'rgba(255,255,255,0.5)' }}>
-            &copy; {new Date().getFullYear()} FIND Real Estate. All rights reserved.
+            &copy; {new Date().getFullYear()} RESIDA. Hak Cipta Dilindungi.
           </div>
-          <Button variant="emerald" href="https://app.findrealestate.com/authentication/sign-in" showArrow>
-            Sign In
+          <Button variant="emerald" href="/login" showArrow>
+            Masuk
           </Button>
         </div>
       </div>

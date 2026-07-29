@@ -13,21 +13,21 @@ const ARROW_SVG = (
 const SERVICES = [
   {
     id: '01',
-    title: 'Buy',
-    desc: 'Find your dream property with expert guidance and personalized support throughout the entire purchasing journey.',
-    image: '/assets/images/buy.fed72bc8.jpg',
+    title: 'Catat',
+    desc: 'Catat data warga, pembayaran iuran, dan pengeluaran bulanan dalam satu sistem yang rapi dan terstruktur.',
+    image: '/assets/images/resida_smart_security.png',
   },
   {
     id: '02',
-    title: 'Sell',
-    desc: 'Maximize your property value with strategic marketing and professional negotiation from experienced agents.',
-    image: '/assets/images/sell.90b8e66b.jpg',
+    title: 'Pantau',
+    desc: 'Pantau statistik keuangan kas dan progres pembayaran warga dengan akurasi tinggi setiap waktu.',
+    image: '/assets/images/resida_financial_graphs.png',
   },
   {
     id: '03',
-    title: 'Rent',
-    desc: 'Discover premium rental options tailored to your lifestyle with flexible terms and dedicated management.',
-    image: '/assets/images/rent.6736c732.jpg',
+    title: 'Lapor',
+    desc: 'Hasilkan laporan administrasi komprehensif yang transparan dan bisa langsung diakses oleh warga kapan saja.',
+    image: '/assets/images/resida_happy_family.png',
   },
 ];
 
@@ -335,7 +335,7 @@ export const ServicesSection: React.FC = () => {
               letterSpacing: '0.02em',
             }}
           >
-            Services
+            Layanan
           </span>
 
           <h2
@@ -349,8 +349,8 @@ export const ServicesSection: React.FC = () => {
               margin: 0,
             }}
           >
-            How FIND<br />
-            <span style={{ color: '#B8B8B8' }}>Can Help You</span>
+            Fitur Andalan<br />
+            <span style={{ color: '#B8B8B8' }}>RESIDA</span>
           </h2>
         </div>
 
@@ -395,9 +395,9 @@ export const ServicesSection: React.FC = () => {
               margin: '0 0 5rem 0',
             }}
           >
-            Our certified agents guide you through every stage of real estate
+            Sistem andal kami memandu Anda mengelola administrasi warga
             <span style={{ color: '#B8B8B8' }}>
-              {' '}with expert knowledge and reliable support.
+              {' '}dengan mudah, cepat, dan transparan.
             </span>
           </p>
 
@@ -439,7 +439,7 @@ export const ServicesSection: React.FC = () => {
                 transition: 'color 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
               }}
             >
-              Get Started with FIND
+              Coba RESIDA Sekarang
             </span>
             <span
               className="cta-button-icon"

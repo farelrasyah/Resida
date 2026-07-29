@@ -11,12 +11,24 @@ export const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  const validateEmail = (value: string): string | null => {
+    if (!value.trim()) return 'Email wajib diisi.';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Format email tidak valid.';
+    return null;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
+
+    const err = validateEmail(email);
+    setEmailError(err);
+    if (err) return;
+
     setIsLoading(true);
     
     try {
@@ -42,19 +54,16 @@ export const LoginPage: React.FC = () => {
       {/* Left Form Section */}
       <div className="w-full md:w-1/2 p-8 md:p-16 lg:p-24 xl:p-32 flex flex-col relative z-10 bg-white min-h-screen justify-between">
         <div className="flex justify-center md:justify-start">
-          <Link to="/" className="inline-block hover:opacity-80 transition-opacity" aria-label="FIND Real Estate">
-            <svg style={{ width: '12rem', height: '3.4rem', color: '#151717' }} fill="none" viewBox="0 0 975 280" xmlns="http://www.w3.org/2000/svg">
-              <path fill="currentColor" d="M836.06 1.01c77.3 0 139.94 62.69 139.94 140C976 218.33 913.35 281 836.06 281H702.61V1.01zm-52.82 80.17v119.44h44.58a59.5 59.5 0 0 0 42.21-17.5 59.7 59.7 0 0 0-42.2-101.94z" />
-              <path fill="currentColor" d="M595.45 183.2V1h80.14v279.99H556.68l-73.33-152.93V281H403.2V1h110.33z" />
-              <path fill="currentColor" d="M376.19 280.99h-141l61.26-140.29L235.2 1h141v279.99Z" />
-              <path fill="currentColor" d="M244.55 81.28H81.14v59.42h101.02v80.17H81.14v60.12H1V1h207.91z" />
-            </svg>
+          <Link to="/" className="inline-block hover:opacity-80 transition-opacity" aria-label="RESIDA">
+            <span className="text-[3.2rem] font-black tracking-tighter text-[#151717]">
+              RESIDA.
+            </span>
           </Link>
         </div>
 
         <div className="w-full max-w-[420px] mx-auto my-12 flex flex-col items-center md:items-start justify-center flex-1">
           <h1 className="text-[3.8rem] md:text-[4.6rem] font-bold leading-[1.1] mb-8 tracking-tight text-[#151717] text-center md:text-left w-full" style={{ fontFamily: 'var(--font-primary)' }}>
-            Welcome back<br />to FIND
+            Selamat Datang di<br />RESIDA
           </h1>
           
           {errorMessage && (
@@ -69,11 +78,17 @@ export const LoginPage: React.FC = () => {
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => { setEmail(e.target.value); if (emailError) setEmailError(null); }}
+                onBlur={() => setEmailError(validateEmail(email))}
                 placeholder="Email"
                 required
-                className="w-full bg-[#F4F4F4] text-[#151717] rounded-[100px] px-10 py-[1.9rem] text-[1.6rem] font-medium placeholder:text-[#888] focus:outline-none focus:ring-[2px] focus:ring-[#151717] focus:bg-white transition-all duration-300 ease-out"
+                className={`w-full bg-[#F4F4F4] text-[#151717] rounded-[100px] px-10 py-[1.9rem] text-[1.6rem] font-medium placeholder:text-[#888] focus:outline-none focus:ring-[2px] focus:bg-white transition-all duration-300 ease-out ${
+                  emailError ? 'ring-[2px] ring-red-500 bg-red-50' : 'focus:ring-[#151717]'
+                }`}
               />
+              {emailError && (
+                <span className="text-red-600 text-[1.3rem] font-medium mt-2 ml-4">{emailError}</span>
+              )}
             </div>
 
             <div className="flex flex-col relative">
@@ -111,12 +126,12 @@ export const LoginPage: React.FC = () => {
             </button>
           </form>
 
-          <div className="mt-14 w-full text-center md:text-left">
-            <p className="text-[1.6rem] font-medium text-[#151717]">
-              Don't have an account?{' '}
-              <a href="#" className="font-bold hover:underline underline-offset-[6px] decoration-2 transition-all">
-                Sign up
-              </a>
+          <div className="mt-14 w-full text-center md:text-left space-y-2">
+            <p className="text-[1.4rem] font-medium text-neutral-500">
+              Default Login — <span className="font-mono text-neutral-400">admin@resida.com</span>
+            </p>
+            <p className="text-[1.4rem] font-medium text-neutral-500">
+              Password — <span className="font-mono text-neutral-400">password</span>
             </p>
           </div>
         </div>
@@ -132,7 +147,7 @@ export const LoginPage: React.FC = () => {
           <div className="absolute inset-0 bg-black/10 z-10 transition-opacity duration-700 hover:bg-black/0" />
           <img 
             src="/assets/images/development.0de63e1b.jpg" 
-            alt="Luxury Property by FIND" 
+            alt="Resida Dashboard" 
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2000ms] ease-out hover:scale-[1.03]"
           />
         </div>

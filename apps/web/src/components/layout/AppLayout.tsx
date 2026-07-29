@@ -7,7 +7,7 @@ export const AppLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#F4F4F4] text-[#151717] font-['Instrument_Sans'] flex">
+    <div className="min-h-screen bg-[#FAFAFA] text-[#151717] font-['Instrument_Sans'] flex transition-colors duration-300">
       {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 

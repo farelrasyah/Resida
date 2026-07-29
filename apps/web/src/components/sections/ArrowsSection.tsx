@@ -21,7 +21,7 @@ export const ArrowsSection: React.FC = () => {
           letterSpacing: '-0.02em',
           marginBottom: '4rem',
         }} className="arrows-title">
-          <span className="em">Find </span>what's next
+          <span className="em">Kelola </span>lebih baik
         </div>
 
         {/* Arrows row */}
@@ -57,7 +57,7 @@ export const ArrowsSection: React.FC = () => {
           lineHeight: 1.3,
           marginTop: '4rem',
         }} className="arrows-text">
-          Real Estate, <span className="em">Rewired.</span>
+          Administrasi RT, <span className="em">Digital.</span>
         </div>
       </div>
 
