@@ -38,7 +38,28 @@ Berikut adalah daftar fitur utama yang tersedia di dalam RESIDA:
 
 ---
 
-## 4. Tech Stack
+## 4. Screenshots
+
+Berikut adalah tangkapan layar dari beberapa halaman aplikasi:
+
+| Halaman | Tampilan |
+| :--- | :--- |
+| **Landing Page** | ![Landing Page](docs/landing-page.png) |
+| **Login** | ![Login](docs/login.png) |
+| **Dashboard** | ![Dashboard](docs/dashboard.png) |
+| **Penghuni** | ![Penghuni](docs/penghuni.png) |
+| **Hunian Rumah** | ![Hunian Rumah](docs/hunian-rumah.png) |
+| **Detail Hunian Rumah** | ![Detail Hunian Rumah](docs/detail-hunian-rumah.png) |
+| **Setting Iuran** | ![Setting Iuran](docs/setting-iuran.png) |
+| **Pembayaran Iuran** | ![Pembayaran Iuran](docs/pembayaran-iuran.png) |
+| **Detail Pembayaran Iuran** | ![Detail Pembayaran Iuran](docs/detail-pembayaran-iuran.png) |
+| **Pengeluaran Kas** | ![Pengeluaran Kas](docs/pengeluaran-kas.png) |
+| **Ringkasan Tahunan** | ![Ringkasan Tahunan](docs/ringkasan-tahunan.png) |
+| **Detail Bulanan** | ![Detail Bulanan](docs/detail-bulanan.png) |
+
+---
+
+## 5. Tech Stack
 
 Aplikasi ini dibangun dengan arsitektur *Monorepo* yang berisi dua sistem terpisah (Frontend dan Backend):
 
@@ -73,7 +94,7 @@ Aplikasi ini dibangun dengan arsitektur *Monorepo* yang berisi dua sistem terpis
 
 ---
 
-## 5. Project Structure
+## 6. Project Structure
 
 Aplikasi ini dikelola dalam satu *repository* tunggal (Monorepo) menggunakan konfigurasi `pnpm-workspace`.
 
@@ -82,6 +103,7 @@ resida/
 ├── apps/
 │   ├── api/               # Source code Backend (Laravel 13 REST API)
 │   └── web/               # Source code Frontend (React 19 SPA)
+├── docs/                  # Dokumentasi dan screenshot aplikasi
 ├── pnpm-workspace.yaml    # Konfigurasi Monorepo pnpm
 ├── package.json           # Global scripts untuk Frontend & Workspace
 └── README.md              # Dokumentasi proyek
@@ -89,7 +111,7 @@ resida/
 
 ---
 
-## 6. Prasyarat
+## 7. Prasyarat
 
 Sebelum memulai proses instalasi, pastikan sistem Anda telah memasang perangkat lunak berikut:
 
@@ -102,7 +124,7 @@ Sebelum memulai proses instalasi, pastikan sistem Anda telah memasang perangkat 
 
 ---
 
-## 7. Panduan Instalasi
+## 8. Panduan Instalasi
 
 Lakukan langkah-langkah instalasi secara berurutan dari kondisi komputer kosong:
 
@@ -177,7 +199,7 @@ Sesuaikan nilai di file `.env` (lihat panduan di section selanjutnya).
 
 ---
 
-## 8. Konfigurasi Environment
+## 9. Konfigurasi Environment
 
 Aplikasi memerlukan penyesuaian pada file `.env` di masing-masing sub-proyek.
 
@@ -213,7 +235,7 @@ VITE_APP_NAME="Sistem Administrasi RT RESIDA"
 
 ---
 
-## 9. Database
+## 10. Database
 
 Perintah-perintah penting *artisan* untuk manajemen database dari dalam direktori `apps/api`:
 
@@ -224,7 +246,7 @@ Perintah-perintah penting *artisan* untuk manajemen database dari dalam direktor
 
 ---
 
-## 10. Storage
+## 11. Storage
 
 Sistem ini mendukung pengunggahan dokumen (*upload KTP*).
 
@@ -234,7 +256,7 @@ Sistem ini mendukung pengunggahan dokumen (*upload KTP*).
 
 ---
 
-## 11. Swagger API Documentation
+## 12. Swagger API Documentation
 
 Proyek ini dilengkapi dengan dokumentasi API interaktif menggunakan `L5-Swagger`.
 
@@ -247,7 +269,7 @@ php artisan l5-swagger:generate
 
 ---
 
-## 12. Authentication
+## 13. Authentication
 
 Sistem menggunakan **Laravel Sanctum (Personal Access Token)** untuk autentikasi API. Tidak menggunakan JWT atau HTTP Sessions *stateful*.
 
@@ -263,7 +285,7 @@ Accept: application/json
 
 ---
 
-## 13. Menjalankan Project
+## 14. Menjalankan Project
 
 Ikuti prosedur standar berikut untuk mulai bekerja:
 
@@ -282,7 +304,7 @@ Ikuti prosedur standar berikut untuk mulai bekerja:
 
 ---
 
-## 14. Default Account
+## 15. Default Account
 
 Jika Anda telah menjalankan instalasi database dengan penanda `--seed`, sistem secara otomatis memuat data dari `UserSeeder`. Gunakan kredensial berikut untuk melakukan login sebagai Administrator RT:
 
@@ -291,7 +313,7 @@ Jika Anda telah menjalankan instalasi database dengan penanda `--seed`, sistem s
 
 ---
 
-## 15. API Overview
+## 16. API Overview
 
 Semua *endpoint* berada di bawah prefix `/api/v1`. Berikut adalah pengelompokan sumber dayanya:
 
@@ -305,7 +327,7 @@ Semua *endpoint* berada di bawah prefix `/api/v1`. Berikut adalah pengelompokan 
 
 ---
 
-## 16. Troubleshooting
+## 17. Troubleshooting
 
 Kendala umum yang sering ditemui selama *setup* lokal:
 
@@ -331,7 +353,7 @@ Kendala umum yang sering ditemui selama *setup* lokal:
 
 ---
 
-## 17. Build Production
+## 18. Build Production
 
 Tahap pengumpulan aset statis untuk peluncuran (*deployment*).
 
@@ -353,13 +375,13 @@ php artisan view:cache
 
 ---
 
-## 18. License
+## 19. License
 
 Hak cipta dilindungi. Proyek ini didistribusikan di bawah **MIT License**.
 
 ---
 
-## 19. Author
+## 20. Author
 
 - **Project Name**: RESIDA (Residential Management System)
 - **Developer**: Farel Rasyah
