@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Printer, CreditCard, Home, Calendar, XCircle, Download } from 'lucide-react';
-import { Card } from '../../components/ui/Card';
+import { ArrowLeft, Home, XCircle, Download } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Skeleton } from '../../components/ui/Skeleton';
